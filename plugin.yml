@@ -1,0 +1,7 @@
+name: FixMyData
+main: com.mcsunnyside.fixmydata.Main
+version: 0.0.1-SNAPSHOT
+commands:
+   fixmydata:
+      description: Auto-repairing my data
+      usage: /fixmydata
