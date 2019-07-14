@@ -5,3 +5,6 @@ commands:
    fixmydata:
       description: Auto-repairing my data
       usage: /fixmydata
+   rollbackmydata:
+      description: Auto-repairing my data
+      usage: /rollbackmydata

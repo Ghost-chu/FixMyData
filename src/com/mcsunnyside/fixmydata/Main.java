@@ -21,8 +21,6 @@ public class Main extends JavaPlugin implements Listener {
 
 	@Override
 	public void onEnable() {
-		saveDefaultConfig();
-		reloadConfig();
 		Bukkit.getPluginManager().registerEvents(this, this);
 	}
 
@@ -42,7 +40,7 @@ public class Main extends JavaPlugin implements Listener {
 					p.sendMessage("§b1.此操作一旦执行，无法恢复，§c§l您的数据就再也回不来了");
 					p.sendMessage("§b2.这会清除你§c§l一切玩家数据 包括成就 统计 背包和末影箱物品");
 					p.sendMessage("§b3.您应把这些物品找个地方放好 不影响您的弹珠 阳光点和领地等数据");
-					p.sendMessage("§b4.在你输入确认之后 1分钟内请勿进入服务器");
+					p.sendMessage("§b4.在你输入确认之后您的数据将被立刻清除");
 					p.sendMessage("§c§l请问真的要继续吗? 确认请输入 §e/fixmydata confirm");
 					p.sendMessage("§e=================================================");
 					if (!ReadyFix.contains(p.getName())) {
@@ -61,27 +59,29 @@ public class Main extends JavaPlugin implements Listener {
 						p.sendMessage("§c§l你还没有查看过使用说明就在使用此危险指令，是否有人正在欺骗你操作？ 如果是，请前往http://forum.mcsunnyside.com举报此玩家！");
 						return true;
 					}
-					UUID UUID = p.getUniqueId();
-					p.kickPlayer("§c您的数据正在修复 10秒内请勿加入服务器");
+					UUID uuid = p.getUniqueId();
+					p.kickPlayer("§c个人资料与数据正在删除 10秒内请勿上线 如有误操作请尽快联系管理员");
+					Bukkit.broadcastMessage("§7玩家§e"+p.getName()+"§7重置了个人数据.");
 					Bukkit.getServer().savePlayers();
-					this.moveFile(
-							getDataFolder().getAbsolutePath().replace("plugins/FixMyData", "") + "/" + worldname
-									+ "/playerdata/" + UUID.toString() + ".dat",
-							getDataFolder().getAbsolutePath().replace("plugins/FixMyData", "") + "/" + worldname
-									+ "/playerdata/" + UUID.toString() + ".dat.bak");
-					this.moveFile(
-							getDataFolder().getAbsolutePath().replace("plugins\\FixMyData", "") + "\\" + worldname
-									+ "/playerdata/" + UUID.toString() + ".dat",
-							getDataFolder().getAbsolutePath().replace("plugins\\FixMyData", "") + "\\" + worldname
-									+ "/playerdata/" + UUID.toString() + ".dat.bak");
-					getLogger().info("Player "+p.getName()+"("+UUID.toString()+")"+" successfully fix him playerdata.");
-
+					
+					File mainWorld = new File(Bukkit.getWorldContainer(),Bukkit.getWorlds().get(0).getName());
+					File playerDataFolder = new File(mainWorld,"playerdata");
+					File playerDataFile = new File(playerDataFolder,uuid.toString()+".dat");
+					File playerDataBakFile = new File(playerDataFolder,uuid.toString()+".dat.bak");
+					if(!playerDataBakFile.exists())
+						try {
+						playerDataBakFile.createNewFile();
+						}catch (Exception e) {
+							// TODO: handle exception
+						}
+					this.moveFile(playerDataFile.getPath(), playerDataBakFile.getPath());
 				}
 			}
 		}
 		return false;
 	}
 
+	@SuppressWarnings("resource")
 	public void copyFile(String oldPath, String newPath) {
 		try {
 //	           int  bytesum  =  0;  
@@ -117,6 +117,12 @@ public class Main extends JavaPlugin implements Listener {
 		}
 	}
 	public void moveFile(String oldPath, String newPath) {
+		File newfile = new File(newPath);
+		if(newfile.exists()) {
+			UUID uuid = UUID.randomUUID();
+			getLogger().warning("Found exist backup file,Backing up with UUID "+uuid.toString()+"...");
+			copyFile(newPath, newPath+".alert."+uuid.toString()+".");
+		}
 		delFile(newPath);
 		copyFile(oldPath, newPath);
 		delFile(oldPath);
