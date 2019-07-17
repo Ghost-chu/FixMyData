@@ -39,7 +39,7 @@ public class Main extends JavaPlugin implements Listener {
 					p.sendMessage("§c§l警告:§b您正在尝试自助玩家数据修复工具 请您§c§l务必详细阅读:");
 					p.sendMessage("§b1.此操作一旦执行，无法恢复，§c§l您的数据就再也回不来了");
 					p.sendMessage("§b2.这会清除你§c§l一切玩家数据 包括成就 统计 背包和末影箱物品");
-					p.sendMessage("§b3.您应把这些物品找个地方放好 不影响您的弹珠 阳光点和领地等数据");
+					p.sendMessage("§b3.您应把这些物品找个地方放好 不影响您的弹珠和插件等数据");
 					p.sendMessage("§b4.在你输入确认之后您的数据将被立刻清除");
 					p.sendMessage("§c§l请问真的要继续吗? 确认请输入 §e/fixmydata confirm");
 					p.sendMessage("§e=================================================");
